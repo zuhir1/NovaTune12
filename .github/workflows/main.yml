@@ -1,0 +1,135 @@
+name: Build NovaTune Setup
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: windows-latest
+    timeout-minutes: 30
+
+    steps:
+      - name: Download project
+        uses: actions/checkout@v4
+
+      - name: Install .NET 9
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: "9.0.x"
+
+      - name: Find NovaTune project
+        shell: pwsh
+        run: |
+          $solution = Get-ChildItem $env:GITHUB_WORKSPACE -Filter NovaTune.sln -Recurse |
+            Select-Object -First 1
+
+          if (-not $solution) {
+            throw "NovaTune.sln was not found."
+          }
+
+          "PROJECT_DIR=$($solution.Directory.FullName)" >> $env:GITHUB_ENV
+
+      - name: Restore packages
+        shell: pwsh
+        run: |
+          dotnet restore "$env:PROJECT_DIR\NovaTune.sln" -p:Platform=x64
+
+      - name: Run tests
+        shell: pwsh
+        run: |
+          dotnet test "$env:PROJECT_DIR\tests\NovaTune.Core.Tests\NovaTune.Core.Tests.csproj" `
+            -c Release `
+            -p:Platform=x64 `
+            --no-restore
+
+      - name: Build Windows application
+        shell: pwsh
+        run: |
+          $publish = Join-Path $env:RUNNER_TEMP "NovaTune-Publish"
+
+          dotnet publish "$env:PROJECT_DIR\src\NovaTune.App\NovaTune.App.csproj" `
+            -c Release `
+            -r win-x64 `
+            --self-contained true `
+            -p:Platform=x64 `
+            -p:PublishSingleFile=false `
+            -p:PublishReadyToRun=false `
+            -o $publish
+
+          "PUBLISH_DIR=$publish" >> $env:GITHUB_ENV
+
+      - name: Install Inno Setup
+        shell: pwsh
+        run: |
+          $compiler = "C:\Program Files (x86)\Inno Setup 6\ISCC.exe"
+
+          if (-not (Test-Path $compiler)) {
+            choco install innosetup -y --no-progress
+          }
+
+          if (-not (Test-Path $compiler)) {
+            throw "Inno Setup was not installed."
+          }
+
+      - name: Create Setup.exe
+        shell: pwsh
+        run: |
+          $installerDirectory = Join-Path $env:RUNNER_TEMP "installer"
+          New-Item -ItemType Directory -Path $installerDirectory -Force | Out-Null
+
+          $scriptPath = Join-Path $env:RUNNER_TEMP "NovaTune.iss"
+
+          @'
+          #define AppName "NovaTune"
+          #define AppVersion "0.1.0"
+          #define AppExeName "NovaTune.App.exe"
+
+          [Setup]
+          AppId={{8D174E9B-7BBA-47AB-97C5-C2C760C9B40A}
+          AppName={#AppName}
+          AppVersion={#AppVersion}
+          DefaultDirName={autopf}\NovaTune
+          DefaultGroupName=NovaTune
+          OutputBaseFilename=NovaTune-Setup
+          Compression=lzma2
+          SolidCompression=yes
+          WizardStyle=modern
+          PrivilegesRequired=admin
+          ArchitecturesAllowed=x64compatible
+          ArchitecturesInstallIn64BitMode=x64compatible
+          UninstallDisplayIcon={app}\{#AppExeName}
+
+          [Files]
+          Source: "{#SourceDir}\*"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs createallsubdirs
+
+          [Icons]
+          Name: "{autoprograms}\NovaTune"; Filename: "{app}\{#AppExeName}"
+          Name: "{autodesktop}\NovaTune"; Filename: "{app}\{#AppExeName}"
+
+          [Run]
+          Filename: "{app}\{#AppExeName}"; Description: "Launch NovaTune"; Flags: nowait postinstall skipifsilent
+          '@ | Set-Content -Path $scriptPath -Encoding UTF8
+
+          $compiler = "C:\Program Files (x86)\Inno Setup 6\ISCC.exe"
+
+          & $compiler `
+            "/DSourceDir=$env:PUBLISH_DIR" `
+            "/O$installerDirectory" `
+            $scriptPath
+
+          if ($LASTEXITCODE -ne 0) {
+            throw "Creating Setup.exe failed."
+          }
+
+      - name: Upload Setup.exe
+        uses: actions/upload-artifact@v4
+        with:
+          name: NovaTune-Setup-Windows-x64
+          path: ${{ runner.temp }}/installer/NovaTune-Setup.exe
+          if-no-files-found: error
+          retention-days: 30
