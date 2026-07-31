@@ -1,0 +1,36 @@
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.31903.59
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NovaTune.Core", "src\NovaTune.Core\NovaTune.Core.csproj", "{7461A316-E38A-4C5A-9A4E-31F9AF279101}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NovaTune.Infrastructure.Windows", "src\NovaTune.Infrastructure.Windows\NovaTune.Infrastructure.Windows.csproj", "{88CE9BED-0FFB-423C-9C0C-8B478493F101}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NovaTune.App", "src\NovaTune.App\NovaTune.App.csproj", "{B0A0E78B-E0BD-419E-8F34-CC1489814101}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NovaTune.Core.Tests", "tests\NovaTune.Core.Tests\NovaTune.Core.Tests.csproj", "{985EF4E3-62A8-43D2-B2DC-C90BC3D9C101}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{7461A316-E38A-4C5A-9A4E-31F9AF279101}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7461A316-E38A-4C5A-9A4E-31F9AF279101}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7461A316-E38A-4C5A-9A4E-31F9AF279101}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7461A316-E38A-4C5A-9A4E-31F9AF279101}.Release|Any CPU.Build.0 = Release|Any CPU
+		{88CE9BED-0FFB-423C-9C0C-8B478493F101}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{88CE9BED-0FFB-423C-9C0C-8B478493F101}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{88CE9BED-0FFB-423C-9C0C-8B478493F101}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{88CE9BED-0FFB-423C-9C0C-8B478493F101}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B0A0E78B-E0BD-419E-8F34-CC1489814101}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B0A0E78B-E0BD-419E-8F34-CC1489814101}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B0A0E78B-E0BD-419E-8F34-CC1489814101}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B0A0E78B-E0BD-419E-8F34-CC1489814101}.Release|Any CPU.Build.0 = Release|Any CPU
+		{985EF4E3-62A8-43D2-B2DC-C90BC3D9C101}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{985EF4E3-62A8-43D2-B2DC-C90BC3D9C101}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{985EF4E3-62A8-43D2-B2DC-C90BC3D9C101}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{985EF4E3-62A8-43D2-B2DC-C90BC3D9C101}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal
