@@ -37,14 +37,13 @@ jobs:
       - name: Restore packages
         shell: pwsh
         run: |
-          dotnet restore "$env:PROJECT_DIR\NovaTune.sln" -p:Platform=x64
+          dotnet restore "$env:PROJECT_DIR\NovaTune.sln"
 
       - name: Run tests
         shell: pwsh
         run: |
           dotnet test "$env:PROJECT_DIR\tests\NovaTune.Core.Tests\NovaTune.Core.Tests.csproj" `
             -c Release `
-            -p:Platform=x64 `
             --no-restore
 
       - name: Build Windows application
