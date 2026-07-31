@@ -1,0 +1,12 @@
+1. Open https://github.com/zuhir1/NovaTune12
+2. Choose Add file, then Upload files.
+3. Drag the CONTENTS of this extracted folder into GitHub.
+4. Keep the two paths exactly as included:
+   .github/workflows/windows-installer.yml
+   NovaTune-Windows-Suite-Source (1)/installer/NovaTune.iss
+5. Click Commit changes.
+6. Open the Actions tab and select Build NovaTune Setup.
+7. If it did not start automatically, click Run workflow.
+8. When the run is green, download NovaTune-Setup-Windows-x64 from Artifacts.
+
+The generated installer is unsigned. Windows SmartScreen may show a warning until the application is code-signed.
